@@ -1,56 +1,119 @@
 using System;
+using System.IO;
 
-class Program
+public class Program
 {
-    static void Main(string[] args)
+    /*
+     * Creativity / Exceeding Requirements:
+     * 1. The program keeps a simple activity log in mindfulness_log.txt.
+     *    Each completed activity is saved with the activity name, duration, and timestamp.
+     * 2. The menu includes an option to view the saved activity log.
+     * 3. Reflection questions are randomized without repeats until every question has been used once.
+     * 4. Duration input is validated so invalid or negative values do not crash the program.
+     */
+
+    private const string LogFileName = "mindfulness_log.txt";
+
+    public static void Main()
     {
-        Console.WriteLine("=== Inheritance Learning Activity ===\n");
+        bool running = true;
 
-        // Test the base Assignment class
-        Console.WriteLine("1. Testing Base Assignment Class:");
-        Assignment simpleAssignment = new Assignment("Samuel Bennett", "Multiplication");
-        Console.WriteLine(simpleAssignment.GetSummary());
-        Console.WriteLine();
+        while (running)
+        {
+            Console.Clear();
+            Console.WriteLine("Menu Options:");
+            Console.WriteLine("  1. Start breathing activity");
+            Console.WriteLine("  2. Start reflection activity");
+            Console.WriteLine("  3. Start listing activity");
+            Console.WriteLine("  4. View activity log");
+            Console.WriteLine("  5. Quit");
+            Console.Write("Select a choice from the menu: ");
 
-        // Test the MathAssignment class
-        Console.WriteLine("2. Testing MathAssignment Class:");
-        MathAssignment mathAssignment = new MathAssignment(
-            "Roberto Rodriguez", 
-            "Fractions", 
-            "7.3", 
-            "8-19"
-        );
-        Console.WriteLine(mathAssignment.GetSummary());
-        Console.WriteLine(mathAssignment.GetHomeworkList());
-        Console.WriteLine();
+            string? choice = Console.ReadLine();
 
-        // Test the WritingAssignment class
-        Console.WriteLine("3. Testing WritingAssignment Class:");
-        WritingAssignment writingAssignment = new WritingAssignment(
-            "Mary Waters", 
-            "European History", 
-            "The Causes of World War II"
-        );
-        Console.WriteLine(writingAssignment.GetSummary());
-        Console.WriteLine(writingAssignment.GetWritingInformation());
-        Console.WriteLine();
+            switch (choice)
+            {
+                case "1":
+                    RunAndLog(new BreathingActivity());
+                    break;
 
-        // Additional demonstration - showing inheritance in action
-        Console.WriteLine("4. Demonstrating Inheritance Benefits:");
-        Console.WriteLine("The MathAssignment and WritingAssignment classes both");
-        Console.WriteLine("inherited the GetSummary() method from Assignment.");
-        Console.WriteLine("They also each added their own specialized methods.");
-        Console.WriteLine();
-        
-        Console.WriteLine("5. Demonstrating Substitution Principle:");
-        Console.WriteLine("A MathAssignment object can be used wherever an");
-        Console.WriteLine("Assignment object is expected (Liskov Substitution).");
-        
-        // This shows substitution - storing a derived class in a base class variable
-        Assignment assignmentAsBase = new MathAssignment("John Doe", "Algebra", "5.2", "1-10");
-        Console.WriteLine($"Using MathAssignment as Assignment: {assignmentAsBase.GetSummary()}");
-        
-        Console.WriteLine("\nPress any key to exit...");
-        Console.ReadKey();
+                case "2":
+                    RunAndLog(new ReflectionActivity());
+                    break;
+
+                case "3":
+                    RunAndLog(new ListingActivity());
+                    break;
+
+                case "4":
+                    DisplayLog();
+                    break;
+
+                case "5":
+                    running = false;
+                    break;
+
+                default:
+                    Console.WriteLine("Please choose a number from 1 to 5.");
+                    Console.WriteLine("Press Enter to return to the menu.");
+                    Console.ReadLine();
+                    break;
+            }
+        }
+    }
+
+    private static void RunAndLog(Activity activity)
+    {
+        switch (activity)
+        {
+            case BreathingActivity breathing:
+                breathing.Run();
+                break;
+            case ReflectionActivity reflection:
+                reflection.Run();
+                break;
+            case ListingActivity listing:
+                listing.Run();
+                break;
+        }
+
+        SaveLog(activity);
+    }
+
+    private static void SaveLog(Activity activity)
+    {
+        string entry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | {activity.GetName()} | {activity.GetDuration()} seconds";
+        File.AppendAllLines(LogFileName, new[] { entry });
+    }
+
+    private static void DisplayLog()
+    {
+        Console.Clear();
+        Console.WriteLine("Mindfulness Activity Log\n");
+
+        if (!File.Exists(LogFileName))
+        {
+            Console.WriteLine("No activities have been logged yet.");
+        }
+        else
+        {
+            string[] entries = File.ReadAllLines(LogFileName);
+
+            if (entries.Length == 0)
+            {
+                Console.WriteLine("No activities have been logged yet.");
+            }
+            else
+            {
+                foreach (string entry in entries)
+                {
+                    Console.WriteLine(entry);
+                }
+            }
+        }
+
+        Console.WriteLine("\nPress Enter to return to the menu.");
+        Console.ReadLine();
     }
 }
+
