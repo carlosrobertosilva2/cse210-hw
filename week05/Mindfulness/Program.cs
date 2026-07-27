@@ -3,15 +3,6 @@ using System.IO;
 
 public class Program
 {
-    /*
-     * Creativity / Exceeding Requirements:
-     * 1. The program keeps a simple activity log in mindfulness_log.txt.
-     *    Each completed activity is saved with the activity name, duration, and timestamp.
-     * 2. The menu includes an option to view the saved activity log.
-     * 3. Reflection questions are randomized without repeats until every question has been used once.
-     * 4. Duration input is validated so invalid or negative values do not crash the program.
-     */
-
     private const string LogFileName = "mindfulness_log.txt";
 
     public static void Main()
