@@ -5,9 +5,9 @@ public class EternalGoal : Goal
     {
     }
 
-    public override void RecordEvent()
+    public override int RecordEvent()
     {
-        // Eternal goals never become complete.
+        return GetPoints();
     }
 
     public override bool IsComplete()
