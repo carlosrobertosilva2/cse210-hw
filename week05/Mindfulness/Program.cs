@@ -1,110 +1,59 @@
-using System;
-using System.IO;
+// EXCEEDS CORE REQUIREMENTS:
+// 1. The program saves and loads a persistent activity log in "activity_log.txt".
+//    This allows the user to see how many times each activity has been completed
+//    across multiple program runs, rather than only during the current session.
+// 2. Reflection questions are shuffled and are not repeated until every question
+//    has been used once in that reflection session.
+// 3. Menu and duration input are validated so invalid entries do not crash the program.
 
-public class Program
+class Program
 {
-    private const string LogFileName = "mindfulness_log.txt";
-
-    public static void Main()
+    static void Main()
     {
-        bool running = true;
+        ActivityLog activityLog = new ActivityLog("activity_log.txt");
+        string choice = "";
 
-        while (running)
+        while (choice != "4")
         {
             Console.Clear();
             Console.WriteLine("Menu Options:");
             Console.WriteLine("  1. Start breathing activity");
             Console.WriteLine("  2. Start reflection activity");
             Console.WriteLine("  3. Start listing activity");
-            Console.WriteLine("  4. View activity log");
-            Console.WriteLine("  5. Quit");
+            Console.WriteLine("  4. Quit");
             Console.Write("Select a choice from the menu: ");
+            choice = Console.ReadLine()?.Trim() ?? "";
 
-            string? choice = Console.ReadLine();
+            Activity? activity = null;
 
             switch (choice)
             {
                 case "1":
-                    RunAndLog(new BreathingActivity());
+                    activity = new BreathingActivity();
                     break;
-
                 case "2":
-                    RunAndLog(new ReflectionActivity());
+                    activity = new ReflectionActivity();
                     break;
-
                 case "3":
-                    RunAndLog(new ListingActivity());
+                    activity = new ListingActivity();
                     break;
-
                 case "4":
-                    DisplayLog();
                     break;
-
-                case "5":
-                    running = false;
-                    break;
-
                 default:
-                    Console.WriteLine("Please choose a number from 1 to 5.");
-                    Console.WriteLine("Press Enter to return to the menu.");
-                    Console.ReadLine();
+                    Console.WriteLine("Please enter a number from 1 to 4.");
+                    Thread.Sleep(1500);
                     break;
             }
-        }
-    }
 
-    private static void RunAndLog(Activity activity)
-    {
-        switch (activity)
-        {
-            case BreathingActivity breathing:
-                breathing.Run();
-                break;
-            case ReflectionActivity reflection:
-                reflection.Run();
-                break;
-            case ListingActivity listing:
-                listing.Run();
-                break;
+            if (activity != null)
+            {
+                activity.Run();
+                activityLog.RecordActivity(activity.GetName());
+            }
         }
 
-        SaveLog(activity);
-    }
-
-    private static void SaveLog(Activity activity)
-    {
-        string entry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | {activity.GetName()} | {activity.GetDuration()} seconds";
-        File.AppendAllLines(LogFileName, new[] { entry });
-    }
-
-    private static void DisplayLog()
-    {
         Console.Clear();
-        Console.WriteLine("Mindfulness Activity Log\n");
-
-        if (!File.Exists(LogFileName))
-        {
-            Console.WriteLine("No activities have been logged yet.");
-        }
-        else
-        {
-            string[] entries = File.ReadAllLines(LogFileName);
-
-            if (entries.Length == 0)
-            {
-                Console.WriteLine("No activities have been logged yet.");
-            }
-            else
-            {
-                foreach (string entry in entries)
-                {
-                    Console.WriteLine(entry);
-                }
-            }
-        }
-
-        Console.WriteLine("\nPress Enter to return to the menu.");
-        Console.ReadLine();
+        activityLog.DisplaySummary();
+        Console.WriteLine("\nThank you for using the Mindfulness Program.");
     }
 }
-
