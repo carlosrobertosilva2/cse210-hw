@@ -4,41 +4,40 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Enter numbers one at a time. Type 0 when you are done.");
+        Random randomGenerator = new Random();
+        string playAgain = "yes";
 
-        int sum = 0;
-        int count = 0;
-        int largest = int.MinValue;
-
-        while (true)
+        while (playAgain == "yes")
         {
-            Console.Write("Enter number: ");
-            int number = int.Parse(Console.ReadLine());
+            int magicNumber = randomGenerator.Next(1, 101);
+            int guess = 0;
+            int guessCount = 0;
 
-            if (number == 0)
+            while (guess != magicNumber)
             {
-                break;
+                Console.Write("What is your guess? ");
+                guess = int.Parse(Console.ReadLine() ?? "0");
+                guessCount++;
+
+                if (guess < magicNumber)
+                {
+                    Console.WriteLine("Higher");
+                }
+                else if (guess > magicNumber)
+                {
+                    Console.WriteLine("Lower");
+                }
+                else
+                {
+                    Console.WriteLine("You guessed it!");
+                }
             }
 
-            sum += number;
-            count++;
+            Console.WriteLine($"It took you {guessCount} guesses.");
+            Console.Write("Would you like to play again (yes/no)? ");
+            playAgain = (Console.ReadLine() ?? "no").ToLower();
 
-            if (number > largest)
-            {
-                largest = number;
-            }
-        }
-
-        if (count > 0)
-        {
-            double average = (double)sum / count;
-            Console.WriteLine($"Sum: {sum}");
-            Console.WriteLine($"Average: {average:F2}");
-            Console.WriteLine($"Largest number: {largest}");
-        }
-        else
-        {
-            Console.WriteLine("No numbers were entered.");
+            Console.WriteLine();
         }
     }
 }
