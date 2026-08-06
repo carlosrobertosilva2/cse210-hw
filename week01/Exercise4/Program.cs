@@ -5,80 +5,69 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Enter numbers one at a time. Type 0 when you are done.");
-
         List<int> numbers = new List<int>();
 
-        while (true)
+        Console.WriteLine("Enter a list of numbers, type 0 when finished.");
+
+        int number = -1;
+
+        while (number != 0)
         {
             Console.Write("Enter number: ");
-            int number = int.Parse(Console.ReadLine());
+            number = int.Parse(Console.ReadLine() ?? "0");
 
-            if (number == 0)
+            if (number != 0)
             {
-                break;
+                numbers.Add(number);
             }
-
-            numbers.Add(number);
         }
 
-        if (numbers.Count == 0)
-        {
-            Console.WriteLine("No numbers were entered.");
-            return;
-        }
-
-        // Compute sum
         int sum = 0;
-        foreach (int n in numbers)
+
+        foreach (int item in numbers)
         {
-            sum += n;
+            sum += item;
         }
 
         double average = (double)sum / numbers.Count;
 
-        // Find largest
-        int largest = numbers[0];
-        foreach (int n in numbers)
+        int largestNumber = numbers[0];
+
+        foreach (int item in numbers)
         {
-            if (n > largest)
+            if (item > largestNumber)
             {
-                largest = n;
+                largestNumber = item;
             }
         }
 
-        // Find smallest number greater than average
-        int? smallestAboveAverage = null;
-        foreach (int n in numbers)
+        int smallestPositiveNumber = int.MaxValue;
+
+        foreach (int item in numbers)
         {
-            if (n > average)
+            if (item > 0 && item < smallestPositiveNumber)
             {
-                if (smallestAboveAverage == null || n < smallestAboveAverage)
-                {
-                    smallestAboveAverage = n;
-                }
+                smallestPositiveNumber = item;
             }
         }
 
-        // Sort and display list
+        Console.WriteLine($"The sum is: {sum}");
+        Console.WriteLine($"The average is: {average}");
+        Console.WriteLine($"The largest number is: {largestNumber}");
+
+        if (smallestPositiveNumber != int.MaxValue)
+        {
+            Console.WriteLine(
+                $"The smallest positive number is: {smallestPositiveNumber}");
+        }
+
         numbers.Sort();
-        Console.WriteLine("\nSorted list:");
-        foreach (int n in numbers)
-        {
-            Console.WriteLine($"  {n}");
-        }
 
-        Console.WriteLine($"\nSum: {sum}");
-        Console.WriteLine($"Average: {average:F2}");
-        Console.WriteLine($"Largest: {largest}");
+        Console.WriteLine("The sorted list is:");
 
-        if (smallestAboveAverage != null)
+        foreach (int item in numbers)
         {
-            Console.WriteLine($"Smallest number greater than average: {smallestAboveAverage}");
-        }
-        else
-        {
-            Console.WriteLine("No numbers are greater than the average.");
+            Console.WriteLine(item);
         }
     }
 }
