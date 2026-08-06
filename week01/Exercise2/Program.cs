@@ -4,41 +4,60 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.Write("Enter your grade percentage (0-100): ");
-        double grade = double.Parse(Console.ReadLine());
+        Console.Write("What is your grade percentage? ");
+        int gradePercentage = int.Parse(Console.ReadLine() ?? "0");
 
-        string letterGrade;
+        string letter;
+        string sign = "";
 
-        if (grade >= 90)
+        if (gradePercentage >= 90)
         {
-            letterGrade = "A";
+            letter = "A";
         }
-        else if (grade >= 80)
+        else if (gradePercentage >= 80)
         {
-            letterGrade = "B";
+            letter = "B";
         }
-        else if (grade >= 70)
+        else if (gradePercentage >= 70)
         {
-            letterGrade = "C";
+            letter = "C";
         }
-        else if (grade >= 60)
+        else if (gradePercentage >= 60)
         {
-            letterGrade = "D";
+            letter = "D";
         }
         else
         {
-            letterGrade = "F";
+            letter = "F";
         }
 
-        Console.WriteLine($"Your letter grade is: {letterGrade}");
+        int lastDigit = gradePercentage % 10;
 
-        if (grade >= 70)
+        if (letter != "A" && letter != "F")
         {
-            Console.WriteLine("Congratulations — you passed!");
+            if (lastDigit >= 7)
+            {
+                sign = "+";
+            }
+            else if (lastDigit < 3)
+            {
+                sign = "-";
+            }
+        }
+        else if (letter == "A" && lastDigit < 3 && gradePercentage < 100)
+        {
+            sign = "-";
+        }
+
+        Console.WriteLine($"Your grade is {letter}{sign}.");
+
+        if (gradePercentage >= 70)
+        {
+            Console.WriteLine("Congratulations! You passed the course.");
         }
         else
         {
-            Console.WriteLine("Don't give up! Keep working hard.");
+            Console.WriteLine("Keep working hard. You can do better next time.");
         }
     }
 }
