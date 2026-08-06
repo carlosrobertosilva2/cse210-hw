@@ -1,17 +1,13 @@
-using System;
-using System.Threading;
-
-public class Activity
+public abstract class Activity
 {
-    private string _name;
-    private string _description;
+    private readonly string _name;
+    private readonly string _description;
     private int _duration;
 
-    public Activity(string name, string description)
+    protected Activity(string name, string description)
     {
         _name = name;
         _description = description;
-        _duration = 0;
     }
 
     public string GetName()
@@ -19,19 +15,31 @@ public class Activity
         return _name;
     }
 
-    public int GetDuration()
+    protected int GetDuration()
     {
         return _duration;
     }
 
-    public void DisplayStartingMessage()
+    protected void DisplayStartingMessage()
     {
         Console.Clear();
         Console.WriteLine($"Welcome to the {_name}.\n");
         Console.WriteLine(_description);
         Console.WriteLine();
 
-        _duration = ReadPositiveInteger("How long, in seconds, would you like for your session? ");
+        while (true)
+        {
+            Console.Write("How long, in seconds, would you like for your session? ");
+            string input = Console.ReadLine()?.Trim() ?? "";
+
+            if (int.TryParse(input, out int duration) && duration > 0)
+            {
+                _duration = duration;
+                break;
+            }
+
+            Console.WriteLine("Please enter a positive whole number.");
+        }
 
         Console.Clear();
         Console.WriteLine("Get ready...");
@@ -39,32 +47,30 @@ public class Activity
         Console.WriteLine();
     }
 
-    public void DisplayEndingMessage()
+    protected void DisplayEndingMessage()
     {
-        Console.WriteLine();
-        Console.WriteLine("Well done!!");
+        Console.WriteLine("\nWell done!!");
         ShowSpinner(2);
-        Console.WriteLine();
-        Console.WriteLine($"You have completed another {_duration} seconds of the {_name}.");
+        Console.WriteLine($"\nYou have completed another {_duration} seconds of the {_name}.");
         ShowSpinner(3);
     }
 
-    public void ShowSpinner(int seconds)
+    protected void ShowSpinner(int seconds)
     {
         string[] frames = { "|", "/", "-", "\\" };
         DateTime endTime = DateTime.Now.AddSeconds(seconds);
-        int i = 0;
+        int index = 0;
 
         while (DateTime.Now < endTime)
         {
-            Console.Write(frames[i % frames.Length]);
+            Console.Write(frames[index]);
             Thread.Sleep(200);
             Console.Write("\b \b");
-            i++;
+            index = (index + 1) % frames.Length;
         }
     }
 
-    public void ShowCountdown(int seconds)
+    protected void ShowCountdown(int seconds)
     {
         for (int i = seconds; i > 0; i--)
         {
@@ -76,19 +82,19 @@ public class Activity
         }
     }
 
-    protected int ReadPositiveInteger(string prompt)
+    protected static List<T> Shuffle<T>(IEnumerable<T> items)
     {
-        while (true)
+        Random random = Random.Shared;
+        List<T> shuffled = items.ToList();
+
+        for (int i = shuffled.Count - 1; i > 0; i--)
         {
-            Console.Write(prompt);
-            string? input = Console.ReadLine();
-
-            if (int.TryParse(input, out int value) && value > 0)
-            {
-                return value;
-            }
-
-            Console.WriteLine("Please enter a whole number greater than 0.");
+            int j = random.Next(i + 1);
+            (shuffled[i], shuffled[j]) = (shuffled[j], shuffled[i]);
         }
+
+        return shuffled;
     }
+
+    public abstract void Run();
 }
