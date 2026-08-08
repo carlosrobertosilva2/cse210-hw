@@ -1,14 +1,17 @@
+using System;
+using System.Threading;
+
 // EXCEEDS CORE REQUIREMENTS:
 // 1. The program saves and loads a persistent activity log in "activity_log.txt".
-//    This allows the user to see how many times each activity has been completed
-//    across multiple program runs, rather than only during the current session.
-// 2. Reflection questions are shuffled and are not repeated until every question
-//    has been used once in that reflection session.
+//    This lets the user see how many times each activity has been completed
+//    across multiple runs of the program.
+// 2. Reflection questions are shuffled so they are not repeated until all
+//    questions in the current set have been used.
 // 3. Menu and duration input are validated so invalid entries do not crash the program.
 
-class Program
+public class Program
 {
-    static void Main()
+    public static void Main(string[] args)
     {
         ActivityLog activityLog = new ActivityLog("activity_log.txt");
         string choice = "";
@@ -22,9 +25,18 @@ class Program
             Console.WriteLine("  3. Start listing activity");
             Console.WriteLine("  4. Quit");
             Console.Write("Select a choice from the menu: ");
-            choice = Console.ReadLine()?.Trim() ?? "";
 
-            Activity? activity = null;
+            choice = Console.ReadLine();
+            if (choice == null)
+            {
+                choice = "4";
+            }
+            else
+            {
+                choice = choice.Trim();
+            }
+
+            Activity activity = null;
 
             switch (choice)
             {
@@ -57,3 +69,4 @@ class Program
         Console.WriteLine("\nThank you for using the Mindfulness Program.");
     }
 }
+
