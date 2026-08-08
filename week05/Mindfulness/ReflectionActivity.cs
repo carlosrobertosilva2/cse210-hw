@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 public class ReflectionActivity : Activity
 {
     private readonly List<string> _prompts = new List<string>
