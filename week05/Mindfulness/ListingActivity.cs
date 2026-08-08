@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 public class ListingActivity : Activity
 {
     private readonly List<string> _prompts = new List<string>
@@ -46,4 +49,5 @@ public class ListingActivity : Activity
     }
 
 }
+
 
