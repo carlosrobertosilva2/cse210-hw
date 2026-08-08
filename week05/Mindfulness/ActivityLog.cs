@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
 public class ActivityLog
 {
     private readonly string _fileName;
@@ -55,8 +59,9 @@ public class ActivityLog
             foreach (string line in lines)
             {
                 string[] parts = line.Split('|');
+                int count;
 
-                if (parts.Length == 2 && int.TryParse(parts[1], out int count))
+                if (parts.Length == 2 && int.TryParse(parts[1], out count))
                 {
                     _activityCounts[parts[0]] = count;
                 }
@@ -64,11 +69,11 @@ public class ActivityLog
         }
         catch (IOException)
         {
-            // If the log cannot be read, the program continues with zeroed counts.
+            // The program can still run if the activity log cannot be read.
         }
         catch (UnauthorizedAccessException)
         {
-            // If file access is restricted, the mindfulness activities still run.
+            // The program can still run if access to the activity log is restricted.
         }
     }
 
@@ -87,11 +92,12 @@ public class ActivityLog
         }
         catch (IOException)
         {
-            // A file-writing problem should not stop the mindfulness activity.
+            // A file-writing problem should not stop the mindfulness activities.
         }
         catch (UnauthorizedAccessException)
         {
-            // The program remains usable even when it cannot save the log.
+            // The program remains usable even if it cannot save the activity log.
         }
     }
 }
+
