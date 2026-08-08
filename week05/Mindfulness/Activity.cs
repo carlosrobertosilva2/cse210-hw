@@ -1,8 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+
 public abstract class Activity
 {
     private readonly string _name;
     private readonly string _description;
     private int _duration;
+    private static readonly Random _random = new Random();
 
     protected Activity(string name, string description)
     {
@@ -27,18 +33,22 @@ public abstract class Activity
         Console.WriteLine(_description);
         Console.WriteLine();
 
-        while (true)
+        bool validDuration = false;
+        while (!validDuration)
         {
             Console.Write("How long, in seconds, would you like for your session? ");
-            string input = Console.ReadLine()?.Trim() ?? "";
+            string input = Console.ReadLine();
 
-            if (int.TryParse(input, out int duration) && duration > 0)
+            int duration;
+            if (int.TryParse(input, out duration) && duration > 0)
             {
                 _duration = duration;
-                break;
+                validDuration = true;
             }
-
-            Console.WriteLine("Please enter a positive whole number.");
+            else
+            {
+                Console.WriteLine("Please enter a positive whole number.");
+            }
         }
 
         Console.Clear();
@@ -74,23 +84,25 @@ public abstract class Activity
     {
         for (int i = seconds; i > 0; i--)
         {
-            Console.Write(i);
+            string number = i.ToString();
+            Console.Write(number);
             Thread.Sleep(1000);
-            Console.Write(new string('\b', i.ToString().Length));
-            Console.Write(new string(' ', i.ToString().Length));
-            Console.Write(new string('\b', i.ToString().Length));
+            Console.Write(new string('\b', number.Length));
+            Console.Write(new string(' ', number.Length));
+            Console.Write(new string('\b', number.Length));
         }
     }
 
     protected static List<T> Shuffle<T>(IEnumerable<T> items)
     {
-        Random random = Random.Shared;
         List<T> shuffled = items.ToList();
 
         for (int i = shuffled.Count - 1; i > 0; i--)
         {
-            int j = random.Next(i + 1);
-            (shuffled[i], shuffled[j]) = (shuffled[j], shuffled[i]);
+            int j = _random.Next(i + 1);
+            T temp = shuffled[i];
+            shuffled[i] = shuffled[j];
+            shuffled[j] = temp;
         }
 
         return shuffled;
